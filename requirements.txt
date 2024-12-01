@@ -13,6 +13,7 @@ discord-webhook==1.0.0
 eventkit==1.0.0
 flake8==6.0.0
 Flask==2.0.3
+flask_cors
 frozenlist==1.3.3
 gunicorn==20.1.0
 ib-insync==0.9.81
