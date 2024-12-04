@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- 
+# tbot_order.py
 """
 TradingBoat © Copyright, Plusgenie Limited 2023. All Rights Reserved.
 """
@@ -70,7 +71,7 @@ class TbotOrder(ABC):
             durationStr="1 D",
             barSizeSetting="1 min",
             whatToShow="MIDPOINT",
-            useRTH=False,
+            useRTH=True,
             formatDate=1,
         )
         data_f = util.df(bars)
@@ -399,6 +400,7 @@ class TbotOrder(ABC):
                 cashQty=t_ord.qty,
                 tif="IOC",
                 orderRef=t_ord.orderRef,
+                outsideRth=True,
             )
         else:
             l_ord = LimitOrder(
@@ -407,6 +409,7 @@ class TbotOrder(ABC):
                 entry_limit,
                 tif=t_ord.tif,
                 orderRef=t_ord.orderRef,
+                outsideRth=True,
             )
         trade = self.ibsyn.placeOrder(contract, l_ord)
         d_ord = OrderDBInfo(
@@ -484,6 +487,7 @@ class TbotOrder(ABC):
             entry_stop,
             tif=t_ord.tif,
             orderRef=t_ord.orderRef,
+            outsideRth=True,
         )
         trade = self.ibsyn.placeOrder(contract, sl_ord)
         d_ord = OrderDBInfo(
@@ -629,6 +633,7 @@ class TbotOrder(ABC):
             orderId=self.ibsyn.client.getReqId(),
             tif=t_ord.tif,
             orderRef=t_ord.orderRef,
+            outsideRth=True,
             transmit=True,
         )
         for i, elm in enumerate([parent, takeProfit]):
@@ -678,6 +683,7 @@ class TbotOrder(ABC):
             orderId=p_ord_id,
             tif=t_ord.tif,
             orderRef=t_ord.orderRef,
+            outsideRth=True,
             transmit=False,
         )
         takeProfit = LimitOrder(
@@ -688,6 +694,7 @@ class TbotOrder(ABC):
             orderId=self.ibsyn.client.getReqId(),
             tif=t_ord.tif,
             orderRef=t_ord.orderRef,
+            outsideRth=True,
             transmit=True,
         )
         for i, elm in enumerate([parent, takeProfit]):
@@ -794,6 +801,7 @@ class TbotOrder(ABC):
             orderId=p_ord_id,
             tif=t_ord.tif,
             orderRef=t_ord.orderRef,
+            outsideRth=True,
             transmit=False,
         )
         stopLoss = StopOrder(
@@ -865,6 +873,7 @@ class TbotOrder(ABC):
             orderId=self.ibsyn.client.getReqId(),
             tif=t_ord.tif,
             orderRef=t_ord.orderRef,
+            outsideRth=True,
             transmit=False,
         )
         stopLoss = StopOrder(
@@ -939,6 +948,7 @@ class TbotOrder(ABC):
             orderId=self.ibsyn.client.getReqId(),
             tif=t_ord.tif,
             orderRef=t_ord.orderRef,
+            outsideRth=True,
             transmit=False,
         )
         stopLoss = StopOrder(
