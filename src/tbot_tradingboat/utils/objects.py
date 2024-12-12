@@ -29,6 +29,9 @@ class EnvSettings:
     ibkr_addr: str = field(
         default_factory=partial(os.environ.get, "TBOT_IBKR_IPADDR", "127.0.0.1")
     )
+    cash_type: str = field(
+        default_factory=partial(os.environ.get, "CASH_TYPE", "AvailableFunds")
+    )
 
     # ---------------------------------
     # Redis database
@@ -112,6 +115,7 @@ class EnvSettings:
     ib_loglevel: str = field(
         default_factory=partial(os.environ.get, "TBOT_IB_LOGLEVEL", "INFO")
     )
+    
 
     # ---------------------------------
     # Enable TBOT Profiler
