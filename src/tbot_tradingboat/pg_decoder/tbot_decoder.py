@@ -628,7 +628,7 @@ class TBOTDecoder(TbotObserver):
                 (
                     item.value
                     for item in account_summary
-                    if item.tag == "AvailableFunds"
+                    if item.tag == "BuyingPower"
                 ),
                 None,
             )
@@ -636,14 +636,14 @@ class TBOTDecoder(TbotObserver):
             available_funds_str = sum(
                 item.value
                 for item in account_summary
-                if item.tag == "AvailableFunds" and item.currency == currency
+                if item.tag == "BuyingPower" and item.currency == currency
             )
         elif sec_type == "CRYPTO":
             available_funds_str = next(
                 (
                     item.value
                     for item in account_summary
-                    if item.tag == "AvailableFunds"
+                    if item.tag == "BuyingPower"
                 ),
                 None,
             )
