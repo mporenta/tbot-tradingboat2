@@ -57,6 +57,7 @@ class TBOTDecoder(TbotObserver):
         self.torder = TbotOrder(self.ibsyn, self.orderdb, self.errordb)
         self.loop = None
         self.profiler = strtobool(shared.profiler)
+        self.cash_type = shared.cash_type
 
     def open(self):
         try:
@@ -628,7 +629,7 @@ class TBOTDecoder(TbotObserver):
                 (
                     item.value
                     for item in account_summary
-                    if item.tag == "BuyingPower"
+                    if item.tag == self.cash_type
                 ),
                 None,
             )
@@ -636,14 +637,14 @@ class TBOTDecoder(TbotObserver):
             available_funds_str = sum(
                 item.value
                 for item in account_summary
-                if item.tag == "BuyingPower" and item.currency == currency
+                if item.tag == self.cash_type and item.currency == currency
             )
         elif sec_type == "CRYPTO":
             available_funds_str = next(
                 (
                     item.value
                     for item in account_summary
-                    if item.tag == "BuyingPower"
+                    if item.tag == self.cash_type
                 ),
                 None,
             )
