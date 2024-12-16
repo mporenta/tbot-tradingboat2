@@ -54,7 +54,8 @@ class TbotOrderEvent(ABC):
         self.orderdb = orderdb
         self.errordb = errordb
         self.contract_pnl = contract_pnl
-        self.accounts = self.ibsyn.managedAccounts()
+        self.account = os.getenv("IB_PAPER_ACCOUNT")
+
 
 
 
@@ -144,7 +145,7 @@ class TbotOrderEvent(ABC):
                 # Do something
                 self.contract_pnl.remove(ele)
                 break
-        self.ibsyn.cancelPnLSingle(pnl.account, "", pnl.conId)
+        self.ibsyn.cancelPnLSingle(self.account, "", pnl.conId)
 
     def on_position_event(self, position: Position):
         """Handle onPositionEvent from ib_insync"""
@@ -195,7 +196,7 @@ class TbotOrderEvent(ABC):
 
     def on_order_status(self, trade: Trade):
         """Updates Order Status from ib insync"""
-        self.account = self.accounts[0] if self.accounts else None
+        
         logger.debug(f"onOrderStatus: {trade} for account: {self.account}")
         self.on_order_common_event(trade)
         if trade.orderStatus.status == OrderStatus.Filled:
