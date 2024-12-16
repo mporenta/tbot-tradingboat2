@@ -62,6 +62,7 @@ class TbotOrder(ABC):
         self.mktrules = TbotMarketRules(ibsyn)
         self.order_event = TbotOrderEvent(ibsyn, orderdb, errordb, self.contract_pnl)
         self.order_event.install_event_hdlrs()
+        self.accounts = self.ibsyn.managedAccounts()
 
     def get_current_price(self, contract: Contract) -> None:
         """Get current price"""
@@ -130,6 +131,7 @@ class TbotOrder(ABC):
 
         return (qty, action): qty : position, SELL/BUY/None
         """
+        self.account = self.accounts[0] if self.accounts else None
         filled_orderdb_pos = self.orderdb.find_filled_orders_qty_by_key(
             OrderKey(t_ord.symbol, t_ord.orderRef), num
         )
@@ -139,7 +141,7 @@ class TbotOrder(ABC):
 
         filled_orderdb_qty = abs(filled_orderdb_pos)
         # Compare filled positions against Api positions()
-        positions = self.ibsyn.positions()
+        positions = self.ibsyn.positions(self.account)
         filtered_positions = [
             p for p in positions if t_ord.symbol == get_ticker(p.contract)
         ]
@@ -167,12 +169,13 @@ class TbotOrder(ABC):
         self, t_ord: OrderTV
     ) -> Tuple[float, Optional[str], Optional[ErrorStates]]:
         """get valid qty from portfolio's position for strategy_close_all()"""
+        self.account = self.accounts[0] if self.accounts else None
         ptf_pos = self.orderdb.find_position_size_by_key(OrderKey(t_ord.symbol))
         if ptf_pos == TBOT_NO_OPEN_POSITIONS:
             logger.warning(f"Failed to find {t_ord.symbol} in portfolio")
             return -1, None, ErrorStates.ENOMKTPOSDB
 
-        positions = self.ibsyn.positions()
+        positions = self.ibsyn.positions(self.account)
         filtered_positions = [
             p for p in positions if t_ord.symbol == get_ticker(p.contract)
         ]
