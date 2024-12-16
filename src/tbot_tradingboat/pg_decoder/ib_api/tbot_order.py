@@ -86,7 +86,8 @@ class TbotOrder(ABC):
 
         self.contract_pnl.append(PnL2Contract(symbol, contract.conId))
         try:
-            account = self.ibsyn.managedAccounts()[0]
+            accounts = self.ibsyn.managedAccounts()
+            account = accounts[0] if accounts else None
             self.ibsyn.reqPnLSingle(account, "", contract.conId)
         except (ValueError, IndexError) as err:
             logger.error(f"Error requesting PnL Single for {symbol}: {err}")
