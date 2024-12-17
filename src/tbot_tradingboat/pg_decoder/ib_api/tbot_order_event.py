@@ -54,10 +54,6 @@ class TbotOrderEvent(ABC):
         self.orderdb = orderdb
         self.errordb = errordb
         self.contract_pnl = contract_pnl
-        self.account = os.getenv("IB_PAPER_ACCOUNT")
-
-
-
 
     def on_connected_event(self):
         """Handle ConnectedEvent from ib_insync"""
@@ -145,7 +141,7 @@ class TbotOrderEvent(ABC):
                 # Do something
                 self.contract_pnl.remove(ele)
                 break
-        self.ibsyn.cancelPnLSingle(self.account, "", pnl.conId)
+        self.ibsyn.cancelPnLSingle(pnl.account, "", pnl.conId)
 
     def on_position_event(self, position: Position):
         """Handle onPositionEvent from ib_insync"""
@@ -196,12 +192,11 @@ class TbotOrderEvent(ABC):
 
     def on_order_status(self, trade: Trade):
         """Updates Order Status from ib insync"""
-        
-        logger.debug(f"onOrderStatus: {trade} for account: {self.account}")
+        logger.debug(f"onOrderStatus: {trade}")
         self.on_order_common_event(trade)
         if trade.orderStatus.status == OrderStatus.Filled:
             # See whether we can update position of portfolio very quickly without waiting for a few seconds
-            positions = self.ibsyn.positions(self.account)
+            positions = self.ibsyn.positions()
             for pos in positions:
                 if pos.contract.symbol == trade.contract.symbol:
                     self.on_order_status_ptf_position(trade.contract, pos.position)
